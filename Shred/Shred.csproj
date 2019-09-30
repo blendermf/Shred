@@ -95,14 +95,17 @@
   <ItemGroup>
     <Compile Include="Lib\CursorManager.cs" />
     <Compile Include="Lib\MenuManager.cs" />
+    <Compile Include="Lib\ModSettingsState.cs" />
     <Compile Include="Lib\StateManager.cs" />
     <Compile Include="Lib\TimeScaleManager.cs" />
     <Compile Include="Main.cs" />
+    <Compile Include="Patches\GameStateMachinePatches.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Info.json" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>powershell.exe -ExecutionPolicy Unrestricted -File "$(SolutionDir)post_build.ps1" -LoadLib -TargetName "$(TargetName)" -TargetPath "$(TargetPath)" -TargetDir "$(TargetDir)\" -ProjectDir "$(ProjectDir)\" -SolutionDir "$(SolutionDir)\" -ConfigurationName "$(ConfigurationName)"</PostBuildEvent>
