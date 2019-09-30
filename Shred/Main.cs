@@ -4,7 +4,7 @@ using System.Reflection;
 using UnityModManagerNet;
 using System;
 
-namespace Shred {
+namespace Shred.Mod {
 
     [Serializable]
     public class Settings : UnityModManager.ModSettings {
