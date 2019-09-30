@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Shred.Lib {
     class CursorManager : MonoBehaviour {
-        private static object padlock = new object();
+        private static readonly object padlock = new object();
 
         public static CursorManager Instance { get; private set; }
 

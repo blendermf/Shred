@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Shred.Lib {
     class TimeScaleManager : MonoBehaviour {
-        private static object padlock = new object();
+        private static readonly object padlock = new object();
 
         public static TimeScaleManager Instance { get; private set; }
 

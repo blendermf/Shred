@@ -59,6 +59,9 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="Unity.TextMeshPro">
+      <HintPath>..\..\XLShredLoader\references\Unity.TextMeshPro.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine">
       <HintPath>..\references\UnityEngine.dll</HintPath>
       <Private>False</Private>
@@ -112,6 +115,6 @@
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>taskkill /IM "Skaterxl.exe" /F /T /FI "STATUS eq RUNNING"
-powershell.exe -ExecutionPolicy Unrestricted -File "$(SolutionDir)pre_build.ps1" -SolutionDir "$(SolutionDir)\"</PreBuildEvent>
+powershell.exe -ExecutionPolicy Unrestricted -File "$(SolutionDir)pre_build.ps1" -SolutionDir "$(SolutionDir)\" -GameAssemblyReferences "UnityEngine.UIModule.dll,Unity.TextMeshPro.dll"</PreBuildEvent>
   </PropertyGroup>
 </Project>

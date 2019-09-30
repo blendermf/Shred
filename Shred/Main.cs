@@ -48,10 +48,10 @@ namespace Shred.Mod {
                 harmonyInstance.PatchAll(Assembly.GetExecutingAssembly());
 
                 shredObject = new GameObject();
-                shredObject.AddComponent<Lib.MenuManager>();
-                shredObject.AddComponent<Lib.StateManager>();
                 shredObject.AddComponent<Lib.CursorManager>();
                 shredObject.AddComponent<Lib.TimeScaleManager>();
+                shredObject.AddComponent<Lib.StateManager>();
+                shredObject.AddComponent<Lib.MenuManager>();
                 UnityEngine.Object.DontDestroyOnLoad(shredObject);
             } else {
                 // Remove patches when disabled

@@ -8,7 +8,7 @@ using GameManagement;
 namespace Shred.Lib {
     class StateManager : MonoBehaviour {
         private Dictionary<Type, HashSet<Type>> allowedTransitions = new Dictionary<Type, HashSet<Type>>();
-        private static object padlock = new object();
+        private static readonly object padlock = new object();
 
         public static StateManager Instance { get; private set; }
 
