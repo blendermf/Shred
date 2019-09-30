@@ -1,0 +1,11 @@
+﻿{
+  "Id": "blendermf.Shred",
+  "DisplayName": "Shred",
+  "Author": "blendermf",
+  "Version": "0.0.1",
+  "ManagerVersion": "0.12.3",
+  "AssemblyName": "Shred.dll",
+  "EntryMethod": "Shred.Mod.Main.Load",
+  "HomePage": "https://github.com/blendermf/shred",
+  "Repository": "https://github.com/blendermf/shred/repository.json"
+}
