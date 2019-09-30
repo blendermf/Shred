@@ -93,6 +93,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Lib\CursorManager.cs" />
+    <Compile Include="Lib\MenuManager.cs" />
+    <Compile Include="Lib\StateManager.cs" />
+    <Compile Include="Lib\TimeScaleManager.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
