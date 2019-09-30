@@ -21,11 +21,11 @@ namespace Shred.Mod {
     }
 
     static class Main {
-
         public static bool enabled = false;
         public static Settings settings;
         public static String modId;
         public static HarmonyInstance harmonyInstance;
+        private static GameObject shredObject;
 
         static bool Load(UnityModManager.ModEntry modEntry) {
 
@@ -46,9 +46,17 @@ namespace Shred.Mod {
                 // Do patching on enable
                 harmonyInstance = HarmonyInstance.Create(modEntry.Info.Id);
                 harmonyInstance.PatchAll(Assembly.GetExecutingAssembly());
+
+                shredObject = new GameObject();
+                shredObject.AddComponent<Lib.MenuManager>();
+                shredObject.AddComponent<Lib.StateManager>();
+                shredObject.AddComponent<Lib.CursorManager>();
+                shredObject.AddComponent<Lib.TimeScaleManager>();
+                UnityEngine.Object.DontDestroyOnLoad(shredObject);
             } else {
                 // Remove patches when disabled
                 harmonyInstance.UnpatchAll(harmonyInstance.Id);
+                GameObject.Destroy(shredObject);
             }
 
             return true;
