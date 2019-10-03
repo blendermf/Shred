@@ -15,11 +15,12 @@ namespace Shred.Lib {
         }
 
         public override void OnEnter() {
-            // make mod settings menu object active
+            MenuManager.Instance.ModSettingsMenu.SetActive(true);
         }
 
         public override void OnUpdate() {
             if (PlayerController.Instance.inputController.player.GetButtonDown("B")) {
+                MenuManager.Instance.ModSettingsMenu.SetActive(false);
                 base.RequestTransitionTo(typeof(PauseState));
             }
         }

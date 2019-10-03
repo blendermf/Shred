@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using TMPro;
 using GameManagement;
@@ -16,6 +17,8 @@ namespace Shred.Lib {
 
         private GameObject ModSettingsButton;
         private GameObject QuitButton;
+
+        public GameObject ModSettingsMenu;
 
         private void Awake() {
             lock (padlock) {
@@ -30,6 +33,9 @@ namespace Shred.Lib {
         private void Start() {
             //StartCoroutine(AppendMenuButtons());
             AppendMenuButtons();
+        }
+
+        private void Update() {
         }
 
         private GameObject AddMainMenuButton(string name, UnityAction action = null, int siblingIndex = -1) {
@@ -61,6 +67,35 @@ namespace Shred.Lib {
             ModSettingsButton = AddMainMenuButton("Mod Settings", () => { GameStateMachine.Instance.RequestTransitionTo(typeof(ModSettingsState)); }, 4);
             QuitButton = AddMainMenuButton("Quit", () => { Application.Quit(); });
 
+            ModSettingsMenu = UnityEngine.Object.Instantiate<GameObject>(GameStateMachine.Instance.LevelSelectionObject);
+
+            LevelSelectionController levelSelectionController = ModSettingsMenu.GetComponentInChildren<LevelSelectionController>();
+            LevelCategoryButton levelCategoryButton = ModSettingsMenu.GetComponentInChildren<LevelCategoryButton>();
+
+            GameObject levelListObject = levelSelectionController.gameObject;
+            GameObject levelCategoryButtonObject = levelCategoryButton.gameObject;
+
+            TMP_FontAsset normalFont = levelCategoryButton.normalFont;
+            TMP_FontAsset highlightedFont = levelCategoryButton.highlightedFont;
+            Selectable.Transition transition = levelCategoryButton.transition;
+            ColorBlock color = levelCategoryButton.colors;
+
+            DestroyImmediate(levelSelectionController, false);
+            DestroyImmediate(levelCategoryButton, false);
+
+            ModSettingsController modSettingsController = levelListObject.gameObject.AddComponent<ModSettingsController>() as ModSettingsController;
+            ModSettingsCategoryButton modSettingsCategoryButton = levelCategoryButtonObject.gameObject.AddComponent<ModSettingsCategoryButton>() as ModSettingsCategoryButton;
+            modSettingsCategoryButton.normalFont = normalFont;
+            modSettingsCategoryButton.highlightedFont = highlightedFont;
+            modSettingsCategoryButton.transition = transition;
+            modSettingsCategoryButton.colors = color;
+            modSettingsCategoryButton.texts = modSettingsCategoryButton.GetComponentsInChildren<TMP_Text>().ToList();
+            modSettingsCategoryButton.label = modSettingsCategoryButton.transform.Find("TextMeshPro Text").GetComponent<TextMeshProUGUI>();
+            modSettingsCategoryButton.targetGraphic = modSettingsCategoryButton.transform.Find("TextMeshPro Text").GetComponent<TextMeshProUGUI>();
+            modSettingsController.modSettingsCategoryButton = modSettingsCategoryButton;
+            modSettingsCategoryButton.modSettingsController = modSettingsController;
+            
+            Util.DumpComponent(modSettingsCategoryButton, "    ", true);
             //yield return null;
         }
 
