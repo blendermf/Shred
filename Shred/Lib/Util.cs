@@ -26,11 +26,18 @@ namespace Shred.Lib {
             Console.WriteLine("{0}{1}", indent, (component == null ? "(null)" : component.GetType().Name));
 
             if (fields) {
+                List<string> lines = new List<string>();
+
                 foreach (var thisVar in component.GetType().GetFields()) {
-                    Console.WriteLine("{0}.{1} = {2}", indent + "  ", thisVar.Name, FormatDumpValue(thisVar.GetValue(component), thisVar.Name, indent + "  "));
+                    lines.Add(String.Format("{0}.{1} = {2}", indent + "  ", thisVar.Name, FormatDumpValue(thisVar.GetValue(component), thisVar.Name, indent + "  ")));
                 }
                 foreach (var thisVar in component.GetType().GetProperties()) {
-                    Console.WriteLine("{0}.{1} = {2}", indent + "  ", thisVar.Name, FormatDumpValue(thisVar.GetValue(component, null), thisVar.Name, indent + "  "));
+                    lines.Add(String.Format("{0}.{1} = {2}", indent + "  ", thisVar.Name, FormatDumpValue(thisVar.GetValue(component, null), thisVar.Name, indent + "  ")));
+                }
+
+                lines.Sort();
+                foreach (string line in lines) {
+                    Console.WriteLine(line);
                 }
             }
         }
@@ -78,6 +85,7 @@ namespace Shred.Lib {
 
         public static void DumpComponentCloneCompare(Component c1, Component c2, string indent) {
             Console.WriteLine("{0}{1}", indent, (c1 == null ? "(null)" : c1.GetType().Name));
+            List<string> lines = new List<string>();
             var c1p = c1.GetType().GetProperties();
             var c2p = c2.GetType().GetProperties();
             for (var i = 0; i < c1p.Count(); i++) {
@@ -85,7 +93,7 @@ namespace Shred.Lib {
                 var c2pv = c2p[i].GetValue(c2, null);
                 var name = c1p[i].Name;
                 if ((c1pv == null ? "(null)" : c1pv.ToString()) != (c2pv == null ? "(null)" : c2pv.ToString())) {
-                    Console.WriteLine("{0}.{1} = {2}", indent + "  ", name, FormatCompareDumpValues(c1pv, c2pv, name, indent + "  "));
+                    lines.Add(String.Format("{0}.{1} = {2}", indent + "  ", name, FormatCompareDumpValues(c1pv, c2pv, name, indent + "  ")));
                 }
             }
             var c1f = c1.GetType().GetFields();
@@ -95,8 +103,12 @@ namespace Shred.Lib {
                 var c2fv = c2f[i].GetValue(c2);
                 var name = c1f[i].Name;
                 if ((c1fv == null ? "(null)" : c1fv.ToString()) != (c2fv == null ? "(null)" : c2fv.ToString())) {
-                    Console.WriteLine("{0}.{1} = {2}", indent + "  ", name, FormatCompareDumpValues(c1fv, c2fv, name, indent + "  "));
+                    lines.Add(String.Format("{0}.{1} = {2}", indent + "  ", name, FormatCompareDumpValues(c1fv, c2fv, name, indent + "  ")));
                 }
+            }
+            lines.Sort();
+            foreach (string line in lines) {
+                Console.WriteLine(line);
             }
         }
     }

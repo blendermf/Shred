@@ -38,7 +38,14 @@ namespace Shred.Lib {
 
         protected override void Awake() {
             base.Awake();
-            label = gameObject.transform.Find("TextMeshPro Text").GetComponent<TMP_Text>();
+
+        }
+
+        protected override void Start() {
+            base.Start();
+
+            label = gameObject.transform.Find("TextMeshPro Text(Clone)").GetComponent<TMP_Text>();
+            UpdateList();
         }
 
         public override Selectable FindSelectableOnLeft() {

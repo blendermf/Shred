@@ -42,11 +42,6 @@ namespace Shred.Lib {
         }
 
         private void Init() {
-            StateManager.Instance.SetAllowedTransition(typeof(PauseState), typeof(ModSettingsState));
-            StateManager.Instance.SetAllowedTransition(typeof(PlayState), typeof(ModSettingsState));
-            StateManager.Instance.SetAllowedTransition(typeof(ModSettingsState), typeof(PauseState));
-            StateManager.Instance.SetAllowedTransition(typeof(ModSettingsState), typeof(PlayState));
-
             LevelCategoryButton levelCategoryButton = GameStateMachine.Instance.LevelSelectionObject.GetComponentInChildren<LevelCategoryButton>();
 
             normalFont = levelCategoryButton.normalFont;
@@ -64,10 +59,10 @@ namespace Shred.Lib {
                 button.GetComponentInChildren<MenuButton>().onClick.AddListener(action);
             }
 
-            button.GetComponent<RectTransform>().SetParent(FindGameObjectByName("Buttons").GetComponent<RectTransform>(), false);
+            button.transform.SetParent(FindGameObjectByName("Buttons").transform, false);
 
             if (siblingIndex > 0) {
-                button.GetComponent<RectTransform>().SetSiblingIndex(4);
+                button.transform.SetSiblingIndex(4);
             }
 
             return button;
@@ -86,6 +81,11 @@ namespace Shred.Lib {
         }
 
         private void SetupModSettingsMenu() {
+            StateManager.Instance.SetAllowedTransition(typeof(PauseState), typeof(ModSettingsState));
+            StateManager.Instance.SetAllowedTransition(typeof(PlayState), typeof(ModSettingsState));
+            StateManager.Instance.SetAllowedTransition(typeof(ModSettingsState), typeof(PauseState));
+            StateManager.Instance.SetAllowedTransition(typeof(ModSettingsState), typeof(PlayState));
+
             ModSettingsMenu = UnityEngine.Object.Instantiate<GameObject>(GameStateMachine.Instance.LevelSelectionObject);
 
             Transform levelList = ModSettingsMenu.transform.Find("Panel/LevelList");
@@ -104,6 +104,26 @@ namespace Shred.Lib {
 
             modSettingsController.modSettingsCategoryButton = modSettingsCategoryButton;
             modSettingsCategoryButton.modSettingsController = modSettingsController;
+
+            Transform content = levelList.Find("Viewport/Content");
+
+            GameObject button = new GameObject("Radio Button", typeof(RectTransform), typeof(RadioButton));
+            button.transform.SetParent(content);
+
+            GameObject left = UnityEngine.Object.Instantiate<GameObject>(FindGameObjectByName("Left Arrow"));
+            GameObject text = UnityEngine.Object.Instantiate<GameObject>(FindGameObjectByName("TextMeshPro Text"));
+            GameObject right = UnityEngine.Object.Instantiate<GameObject>(FindGameObjectByName("Right Arrow"));
+            left.transform.SetParent(button.transform);
+            text.transform.SetParent(button.transform);
+            right.transform.SetParent(button.transform);
+            left.GetComponent<TMP_Text>().ForceMeshUpdate(true);
+            text.GetComponent<TMP_Text>().ForceMeshUpdate(true);
+            right.GetComponent<TMP_Text>().ForceMeshUpdate(true);
+
+            RadioButton radio = button.GetComponent<RadioButton>();
+            SetupButtonStyle(radio);
+            radio.texts = button.GetComponentsInChildren<TMP_Text>().ToList();
+            Util.DumpGameObject(button, "   ", true);
         }
 
         private static GameObject FindGameObjectByName(string name) {
