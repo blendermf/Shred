@@ -20,6 +20,11 @@ namespace Shred.Lib {
 
         public GameObject ModSettingsMenu;
 
+        private TMP_FontAsset normalFont;
+        private TMP_FontAsset highlightedFont;
+        private Selectable.Transition transition;
+        private ColorBlock color;
+
         private void Awake() {
             lock (padlock) {
                 if (MenuManager.Instance != null) {
@@ -31,11 +36,23 @@ namespace Shred.Lib {
         }
 
         private void Start() {
-            //StartCoroutine(AppendMenuButtons());
-            AppendMenuButtons();
+            Init();
+            SetupMainMenuButtons();
+            SetupModSettingsMenu();
         }
 
-        private void Update() {
+        private void Init() {
+            StateManager.Instance.SetAllowedTransition(typeof(PauseState), typeof(ModSettingsState));
+            StateManager.Instance.SetAllowedTransition(typeof(PlayState), typeof(ModSettingsState));
+            StateManager.Instance.SetAllowedTransition(typeof(ModSettingsState), typeof(PauseState));
+            StateManager.Instance.SetAllowedTransition(typeof(ModSettingsState), typeof(PlayState));
+
+            LevelCategoryButton levelCategoryButton = GameStateMachine.Instance.LevelSelectionObject.GetComponentInChildren<LevelCategoryButton>();
+
+            normalFont = levelCategoryButton.normalFont;
+            highlightedFont = levelCategoryButton.highlightedFont;
+            transition = levelCategoryButton.transition;
+            color = levelCategoryButton.colors;
         }
 
         private GameObject AddMainMenuButton(string name, UnityAction action = null, int siblingIndex = -1) {
@@ -56,47 +73,37 @@ namespace Shred.Lib {
             return button;
         }
 
-        private void AppendMenuButtons() {
-            //yield return new WaitForSecondsRealtime(0.1f);
+        private void SetupButtonStyle(MenuButton button) {
+            button.normalFont = normalFont;
+            button.highlightedFont = highlightedFont;
+            button.transition = transition;
+            button.colors = color;
+        }
 
-            StateManager.Instance.SetAllowedTransition(typeof(PauseState), typeof(ModSettingsState));
-            StateManager.Instance.SetAllowedTransition(typeof(PlayState), typeof(ModSettingsState));
-            StateManager.Instance.SetAllowedTransition(typeof(ModSettingsState), typeof(PauseState));
-            StateManager.Instance.SetAllowedTransition(typeof(ModSettingsState), typeof(PlayState));
-
+        private void SetupMainMenuButtons() {
             ModSettingsButton = AddMainMenuButton("Mod Settings", () => { GameStateMachine.Instance.RequestTransitionTo(typeof(ModSettingsState)); }, 4);
             QuitButton = AddMainMenuButton("Quit", () => { Application.Quit(); });
+        }
 
+        private void SetupModSettingsMenu() {
             ModSettingsMenu = UnityEngine.Object.Instantiate<GameObject>(GameStateMachine.Instance.LevelSelectionObject);
 
-            LevelSelectionController levelSelectionController = ModSettingsMenu.GetComponentInChildren<LevelSelectionController>();
-            LevelCategoryButton levelCategoryButton = ModSettingsMenu.GetComponentInChildren<LevelCategoryButton>();
+            Transform levelList = ModSettingsMenu.transform.Find("Panel/LevelList");
+            Transform levelCategoryButton = ModSettingsMenu.transform.Find("Panel/Category Button");
 
-            GameObject levelListObject = levelSelectionController.gameObject;
-            GameObject levelCategoryButtonObject = levelCategoryButton.gameObject;
+            // Not great, might move code after to happen in a coroutine in the next frame so I can use normal Destroy,
+            // the false being passed at least makes it a little safer
+            DestroyImmediate(levelList.GetComponent<LevelSelectionController>(), false);
+            DestroyImmediate(levelCategoryButton.GetComponent<LevelCategoryButton>(), false);
 
-            TMP_FontAsset normalFont = levelCategoryButton.normalFont;
-            TMP_FontAsset highlightedFont = levelCategoryButton.highlightedFont;
-            Selectable.Transition transition = levelCategoryButton.transition;
-            ColorBlock color = levelCategoryButton.colors;
+            ModSettingsController modSettingsController = levelList.gameObject.AddComponent<ModSettingsController>() as ModSettingsController;
+            ModSettingsCategoryButton modSettingsCategoryButton = levelCategoryButton.gameObject.AddComponent<ModSettingsCategoryButton>() as ModSettingsCategoryButton;
 
-            DestroyImmediate(levelSelectionController, false);
-            DestroyImmediate(levelCategoryButton, false);
-
-            ModSettingsController modSettingsController = levelListObject.gameObject.AddComponent<ModSettingsController>() as ModSettingsController;
-            ModSettingsCategoryButton modSettingsCategoryButton = levelCategoryButtonObject.gameObject.AddComponent<ModSettingsCategoryButton>() as ModSettingsCategoryButton;
-            modSettingsCategoryButton.normalFont = normalFont;
-            modSettingsCategoryButton.highlightedFont = highlightedFont;
-            modSettingsCategoryButton.transition = transition;
-            modSettingsCategoryButton.colors = color;
+            SetupButtonStyle(modSettingsCategoryButton);
             modSettingsCategoryButton.texts = modSettingsCategoryButton.GetComponentsInChildren<TMP_Text>().ToList();
-            modSettingsCategoryButton.label = modSettingsCategoryButton.transform.Find("TextMeshPro Text").GetComponent<TextMeshProUGUI>();
-            modSettingsCategoryButton.targetGraphic = modSettingsCategoryButton.transform.Find("TextMeshPro Text").GetComponent<TextMeshProUGUI>();
+
             modSettingsController.modSettingsCategoryButton = modSettingsCategoryButton;
             modSettingsCategoryButton.modSettingsController = modSettingsController;
-            
-            Util.DumpComponent(modSettingsCategoryButton, "    ", true);
-            //yield return null;
         }
 
         private static GameObject FindGameObjectByName(string name) {

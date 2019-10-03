@@ -101,6 +101,7 @@
     <Compile Include="Lib\ModSettingsCategoryButton.cs" />
     <Compile Include="Lib\ModSettingsController.cs" />
     <Compile Include="Lib\ModSettingsState.cs" />
+    <Compile Include="Lib\RadioButton.cs" />
     <Compile Include="Lib\StateManager.cs" />
     <Compile Include="Lib\TimeScaleManager.cs" />
     <Compile Include="Lib\Util.cs" />
