@@ -135,9 +135,27 @@ namespace Shred.Lib {
             GameObject left = UnityEngine.Object.Instantiate<GameObject>(FindGameObjectByName("Left Arrow"));
             GameObject text = UnityEngine.Object.Instantiate<GameObject>(FindGameObjectByName("TextMeshPro Text"));
             GameObject right = UnityEngine.Object.Instantiate<GameObject>(FindGameObjectByName("Right Arrow"));
+
+            RectTransform textTransform = text.transform as RectTransform;
+            TextMeshProUGUI textTMP = text.GetComponent<TextMeshProUGUI>();
+
+            textTMP.alignment = TextAlignmentOptions.Center;
+            textTMP.overflowMode = TextOverflowModes.Overflow;
+
+            textTransform.anchoredPosition = new Vector2(0, 0);
+            textTransform.anchorMin = new Vector2(0, 1);
+            textTransform.localPosition = new Vector2(0, 0);
+            textTransform.offsetMax = new Vector2(-20, 0);
+            textTransform.offsetMin = new Vector2(20, -40);
+            textTransform.pivot = new Vector2(0.5f, 1);
+            textTransform.sizeDelta = new Vector2(-40, 40);
+
+
+
             left.transform.SetParent(button.transform, false);
             text.transform.SetParent(button.transform, false);
             right.transform.SetParent(button.transform, false);
+
             left.GetComponent<TMP_Text>().ForceMeshUpdate(true);
             text.GetComponent<TMP_Text>().ForceMeshUpdate(true);
             right.GetComponent<TMP_Text>().ForceMeshUpdate(true);
@@ -148,7 +166,8 @@ namespace Shred.Lib {
             radio.texts = radio.GetComponentsInChildren<TMP_Text>().ToList();
 
 
-            Util.DumpGameObject(button, "   ", true);
+            //Util.DumpGameObject(button, "   ", true);
+            Util.DumpGameObjectCloneCompare(text, modSettingsCategoryButton.transform.Find("TextMeshPro Text").gameObject, "   ");
         }
 
         private static GameObject FindGameObjectByName(string name)
