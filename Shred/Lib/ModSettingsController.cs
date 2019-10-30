@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 
 namespace Shred.Lib {
-    public class ModSettingsController : MonoBehaviour {
+    public class ModSettingsController : ListViewController {
         public List<string> availableMods = new List<string>(){"TestMod1", "TestMod2", "TestMod3"};
         public ModSettingsCategoryButton modSettingsCategoryButton;
         public int _currentIndex = 0;
@@ -21,24 +21,25 @@ namespace Shred.Lib {
         }
 
         public void Start() {
-            UpdateList();
+            UpdateCategoryList();
         }
 
         public void NextCategory() {
             CurrentIndex++;
-            UpdateList();
+            UpdateCategoryList();
         }
 
         public void PreviousCategory() {
             CurrentIndex--;
-            UpdateList();
+            UpdateCategoryList();
         }
 
-        public void UpdateList() {
+        public void UpdateCategoryList() {
             modSettingsCategoryButton.SetCategory(availableMods[CurrentIndex]);
         }
 
-        private void Update() {
+        protected override void Update() {
+            base.Update();
             if (EventSystem.current.currentSelectedGameObject == null || !EventSystem.current.currentSelectedGameObject.activeInHierarchy) {
                 EventSystem.current.SetSelectedGameObject(modSettingsCategoryButton.gameObject);
             }

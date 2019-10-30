@@ -18,7 +18,7 @@ $modTargetDir = [io.path]::combine( $gameDirectory, "Mods\", $targetModName);
 $modTargetDirTmpParent = $modTargetDir + 'Tmp'
 $modTargetDirTmp = $modTargetDirTmpParent + '\' + $targetModName;
 
-Get-ChildItem $modTargetDir -Recurse -Exclude 'Settings.xml', 'CustomObjects', 'mainmenu' | Remove-Item;
+Get-ChildItem $modTargetDir -Recurse -Exclude 'Settings.xml' | Remove-Item;
 
 New-Item -ItemType directory -Path $modTargetDir -Force;
 

@@ -7,7 +7,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 namespace Shred.Lib {
-    public class RadioButton : MenuButton {
+    public class RadioButton : ListViewMenuControlItem {
         public List<string> options = new List<string>() { "Test Option 1", "Test Option 2", "Test Option 3" };
         public TMP_Text label;
 
@@ -38,13 +38,11 @@ namespace Shred.Lib {
 
         protected override void Awake() {
             base.Awake();
-
+            label = gameObject.transform.Find("TextMeshPro Text(Clone)").GetComponent<TMP_Text>();
         }
 
         protected override void Start() {
             base.Start();
-
-            label = gameObject.transform.Find("TextMeshPro Text(Clone)").GetComponent<TMP_Text>();
             UpdateList();
         }
 

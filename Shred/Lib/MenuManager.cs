@@ -8,9 +8,12 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using TMPro;
 using GameManagement;
+using System.IO;
+using UnityEngine.SceneManagement;
 
 namespace Shred.Lib {
-    class MenuManager : MonoBehaviour {
+    class MenuManager : MonoBehaviour
+    {
         private static readonly object padlock = new object();
 
         public static MenuManager Instance { get; private set; }
@@ -25,23 +28,30 @@ namespace Shred.Lib {
         private Selectable.Transition transition;
         private ColorBlock color;
 
-        private void Awake() {
-            lock (padlock) {
-                if (MenuManager.Instance != null) {
+        private void Awake()
+        {
+            lock (padlock)
+            {
+                if (MenuManager.Instance != null)
+                {
                     Debug.LogError("More than one MenuManager");
-                } else {
+                }
+                else
+                {
                     MenuManager.Instance = this;
                 }
             }
         }
 
-        private void Start() {
+        private void Start()
+        {
             Init();
             SetupMainMenuButtons();
             SetupModSettingsMenu();
         }
 
-        private void Init() {
+        private void Init()
+        {
             LevelCategoryButton levelCategoryButton = GameStateMachine.Instance.LevelSelectionObject.GetComponentInChildren<LevelCategoryButton>();
 
             normalFont = levelCategoryButton.normalFont;
@@ -50,37 +60,43 @@ namespace Shred.Lib {
             color = levelCategoryButton.colors;
         }
 
-        private GameObject AddMainMenuButton(string name, UnityAction action = null, int siblingIndex = -1) {
+        private GameObject AddMainMenuButton(string name, UnityAction action = null, int siblingIndex = -1)
+        {
             GameObject button = UnityEngine.Object.Instantiate<GameObject>(FindGameObjectByName("Gear Button"));
             button.GetComponentInChildren<TextMeshProUGUI>().SetText(name);
 
             button.GetComponentInChildren<MenuButton>().onClick = new Button.ButtonClickedEvent();
-            if (!(action == null)) {
+            if (!(action == null))
+            {
                 button.GetComponentInChildren<MenuButton>().onClick.AddListener(action);
             }
 
             button.transform.SetParent(FindGameObjectByName("Buttons").transform, false);
 
-            if (siblingIndex > 0) {
+            if (siblingIndex > 0)
+            {
                 button.transform.SetSiblingIndex(4);
             }
 
             return button;
         }
 
-        private void SetupButtonStyle(MenuButton button) {
+        private void SetupButtonStyle(MenuButton button)
+        {
             button.normalFont = normalFont;
             button.highlightedFont = highlightedFont;
             button.transition = transition;
             button.colors = color;
         }
 
-        private void SetupMainMenuButtons() {
+        private void SetupMainMenuButtons()
+        {
             ModSettingsButton = AddMainMenuButton("Mod Settings", () => { GameStateMachine.Instance.RequestTransitionTo(typeof(ModSettingsState)); }, 4);
             QuitButton = AddMainMenuButton("Quit", () => { Application.Quit(); });
         }
 
-        private void SetupModSettingsMenu() {
+        private void SetupModSettingsMenu()
+        {
             StateManager.Instance.SetAllowedTransition(typeof(PauseState), typeof(ModSettingsState));
             StateManager.Instance.SetAllowedTransition(typeof(PlayState), typeof(ModSettingsState));
             StateManager.Instance.SetAllowedTransition(typeof(ModSettingsState), typeof(PauseState));
@@ -107,35 +123,48 @@ namespace Shred.Lib {
 
             Transform content = levelList.Find("Viewport/Content");
 
-            GameObject button = new GameObject("Radio Button", typeof(RectTransform), typeof(RadioButton));
-            button.transform.SetParent(content);
+            Destroy(content.Find("Instruction Button").gameObject);
 
+            GameObject button = new GameObject("Radio Button", typeof(RectTransform));
+            //GameObject button = UnityEngine.Object.Instantiate<GameObject>(GameStateMachine.Instance.LevelSelectionObject.transform.Find("Panel/Category Button").gameObject);
+            //DestroyImmediate(button.GetComponent<LevelCategoryButton>(), false);
+            
+            
+            button.transform.SetParent(content, false);
+            
             GameObject left = UnityEngine.Object.Instantiate<GameObject>(FindGameObjectByName("Left Arrow"));
             GameObject text = UnityEngine.Object.Instantiate<GameObject>(FindGameObjectByName("TextMeshPro Text"));
             GameObject right = UnityEngine.Object.Instantiate<GameObject>(FindGameObjectByName("Right Arrow"));
-            left.transform.SetParent(button.transform);
-            text.transform.SetParent(button.transform);
-            right.transform.SetParent(button.transform);
+            left.transform.SetParent(button.transform, false);
+            text.transform.SetParent(button.transform, false);
+            right.transform.SetParent(button.transform, false);
             left.GetComponent<TMP_Text>().ForceMeshUpdate(true);
             text.GetComponent<TMP_Text>().ForceMeshUpdate(true);
             right.GetComponent<TMP_Text>().ForceMeshUpdate(true);
 
-            RadioButton radio = button.GetComponent<RadioButton>();
+            RadioButton radio = button.AddComponent<RadioButton>();
             SetupButtonStyle(radio);
-            radio.texts = button.GetComponentsInChildren<TMP_Text>().ToList();
+            modSettingsController.AddControl(radio);
+            radio.texts = radio.GetComponentsInChildren<TMP_Text>().ToList();
+
+
             Util.DumpGameObject(button, "   ", true);
         }
 
-        private static GameObject FindGameObjectByName(string name) {
-            foreach (GameObject gameObject in Resources.FindObjectsOfTypeAll(typeof(GameObject)) as GameObject[]) {
-                if (gameObject.name == name) {
+        private static GameObject FindGameObjectByName(string name)
+        {
+            foreach (GameObject gameObject in Resources.FindObjectsOfTypeAll(typeof(GameObject)) as GameObject[])
+            {
+                if (gameObject.name == name)
+                {
                     return gameObject;
                 }
             }
             return null;
         }
 
-        private void OnDestroy() {
+        private void OnDestroy()
+        {
             Destroy(ModSettingsButton);
             Destroy(QuitButton);
             Instance = null;

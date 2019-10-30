@@ -91,12 +91,17 @@
       <HintPath>..\references\UnityEngine.UI.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="UnityEngine.UIModule">
+      <HintPath>..\references\UnityEngine.UIModule.dll</HintPath>
+    </Reference>
     <Reference Include="UnityModManager">
       <HintPath>..\references\UnityModManager.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Lib\CursorManager.cs" />
+    <Compile Include="Lib\ListViewController.cs" />
+    <Compile Include="Lib\ListViewMenuControlItem.cs" />
     <Compile Include="Lib\MenuManager.cs" />
     <Compile Include="Lib\ModSettingsCategoryButton.cs" />
     <Compile Include="Lib\ModSettingsController.cs" />
@@ -118,7 +123,7 @@
     <PostBuildEvent>powershell.exe -ExecutionPolicy Unrestricted -File "$(SolutionDir)post_build.ps1" -LoadLib -TargetName "$(TargetName)" -TargetPath "$(TargetPath)" -TargetDir "$(TargetDir)\" -ProjectDir "$(ProjectDir)\" -SolutionDir "$(SolutionDir)\" -ConfigurationName "$(ConfigurationName)"</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PreBuildEvent>taskkill /IM "Skaterxl.exe" /F /T /FI "STATUS eq RUNNING"
+    <PreBuildEvent>taskkill /IM "SkaterXL.exe" /F /T /FI "STATUS eq RUNNING"
 powershell.exe -ExecutionPolicy Unrestricted -File "$(SolutionDir)pre_build.ps1" -SolutionDir "$(SolutionDir)\" -GameAssemblyReferences "UnityEngine.UIModule.dll,Unity.TextMeshPro.dll"</PreBuildEvent>
   </PropertyGroup>
 </Project>
