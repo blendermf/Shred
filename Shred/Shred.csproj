@@ -102,6 +102,7 @@
     <Compile Include="Lib\CursorManager.cs" />
     <Compile Include="Lib\ListViewController.cs" />
     <Compile Include="Lib\ListViewMenuControlItem.cs" />
+    <Compile Include="Lib\MenuButtonExtensions.cs" />
     <Compile Include="Lib\MenuManager.cs" />
     <Compile Include="Lib\ModSettingsCategoryButton.cs" />
     <Compile Include="Lib\ModSettingsController.cs" />

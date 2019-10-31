@@ -5,8 +5,11 @@ using System.Text;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using GameManagement;
 
 namespace Shred.Lib {
+    using MenuButtonExtensions;
+
     public class ModSettingsCategoryButton : MenuButton {
         public ModSettingsController modSettingsController;
 
@@ -15,6 +18,11 @@ namespace Shred.Lib {
         protected override void Awake() {
             base.Awake();
             label = gameObject.transform.Find("TextMeshPro Text").GetComponent<TMP_Text>();
+        }
+
+        protected override void Start()
+        {
+            this.SetupStyles();
         }
 
         public override Selectable FindSelectableOnLeft() {

@@ -7,7 +7,10 @@ using UnityEngine;
 namespace Shred.Lib {
     class Util {
         public static void DumpGameObject(GameObject gameObject, string indent, bool fields = false) {
+            
             Console.WriteLine("{0}+{1}", indent, gameObject.name);
+
+
 
             foreach (Component component in gameObject.GetComponents<Component>()) {
                 DumpComponent(component, indent + "  ", fields);
@@ -18,16 +21,34 @@ namespace Shred.Lib {
             }
         }
 
+        public static string DumpGameObjectToString(GameObject gameObject, string indent, bool fields = false)
+        {
+            List<string> strings = new List<string>();
+            strings.Add(string.Format("{0}+{1}", indent, gameObject.name));
+            
+            foreach (Component component in gameObject.GetComponents<Component>())
+            {
+                strings.Add(DumpComponentToString(component, indent + "  ", fields));
+            }
+
+            foreach (Transform child in gameObject.transform)
+            {
+                strings.Add(DumpGameObjectToString(child.gameObject, indent + "  ", fields));
+            }
+
+            return string.Join("\n", strings.ToArray());
+        }
+
         private static string FormatDumpValue(object value, string valName, string indent) {
             return value == null ? "(null)" : value.ToString().Replace("\n", "\n" + indent + new string(' ', valName.Length + 4));
         }
 
         public static void DumpComponent(Component component, string indent, bool fields = false) {
+            
             Console.WriteLine("{0}{1}", indent, (component == null ? "(null)" : component.GetType().Name));
 
             if (fields) {
                 List<string> lines = new List<string>();
-
                 foreach (var thisVar in component.GetType().GetFields()) {
                     lines.Add(String.Format("{0}.{1} = {2}", indent + "  ", thisVar.Name, FormatDumpValue(thisVar.GetValue(component), thisVar.Name, indent + "  ")));
                 }
@@ -40,6 +61,26 @@ namespace Shred.Lib {
                     Console.WriteLine(line);
                 }
             }
+        }
+
+        public static string DumpComponentToString(Component component, string indent, bool fields = false)
+        {
+            List<string> lines = new List<string>();
+            if (fields)
+            {
+                foreach (var thisVar in component.GetType().GetFields())
+                {
+                    lines.Add(String.Format("{0}.{1} = {2}", indent + "  ", thisVar.Name, FormatDumpValue(thisVar.GetValue(component), thisVar.Name, indent + "  ")));
+                }
+                foreach (var thisVar in component.GetType().GetProperties())
+                {
+                    lines.Add(String.Format("{0}.{1} = {2}", indent + "  ", thisVar.Name, FormatDumpValue(thisVar.GetValue(component, null), thisVar.Name, indent + "  ")));
+                }
+
+                lines.Sort();
+            }
+
+            return string.Format("{0}{1}", indent, (component == null ? "(null)" : component.GetType().Name)) + (fields ? "\n" + string.Join("\n", lines.ToArray()) : "");
         }
 
         public static void DumpGameObjectCloneCompare(GameObject o1, GameObject o2, string indent) {
@@ -110,6 +151,18 @@ namespace Shred.Lib {
             foreach (string line in lines) {
                 Console.WriteLine(line);
             }
+        }
+
+        public static GameObject FindGameObjectByName(string name)
+        {
+            foreach (GameObject gameObject in Resources.FindObjectsOfTypeAll(typeof(GameObject)) as GameObject[])
+            {
+                if (gameObject.name == name)
+                {
+                    return gameObject;
+                }
+            }
+            return null;
         }
     }
 }
