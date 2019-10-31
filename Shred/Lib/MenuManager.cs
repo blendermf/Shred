@@ -128,10 +128,21 @@ namespace Shred.Lib {
             GameObject button = new GameObject("Radio Button", typeof(RectTransform));
             //GameObject button = UnityEngine.Object.Instantiate<GameObject>(GameStateMachine.Instance.LevelSelectionObject.transform.Find("Panel/Category Button").gameObject);
             //DestroyImmediate(button.GetComponent<LevelCategoryButton>(), false);
-            
-            
+            RectTransform bTransform = button.transform as RectTransform;
+            bTransform.anchoredPosition = new Vector2(0, -64);
+            bTransform.anchorMin = new Vector2(0, 1);
+            bTransform.anchorMax = new Vector2(1, 1);
+            //bTransform.localPosition = new Vector3(-320, -64);
+            bTransform.offsetMax = new Vector2(-52, -64);
+            bTransform.offsetMin = new Vector2(52, -146);
+            bTransform.pivot = new Vector2(0.5f, 1);
+            bTransform.sizeDelta = new Vector2(-104, 82);
+
             button.transform.SetParent(content, false);
             
+
+
+
             GameObject left = UnityEngine.Object.Instantiate<GameObject>(FindGameObjectByName("Left Arrow"));
             GameObject text = UnityEngine.Object.Instantiate<GameObject>(FindGameObjectByName("TextMeshPro Text"));
             GameObject right = UnityEngine.Object.Instantiate<GameObject>(FindGameObjectByName("Right Arrow"));
@@ -147,6 +158,7 @@ namespace Shred.Lib {
             textTransform.localPosition = new Vector2(0, 0);
             textTransform.offsetMax = new Vector2(-20, 0);
             textTransform.offsetMin = new Vector2(20, -40);
+            textTransform.offsetMin = new Vector2(20, 0);
             textTransform.pivot = new Vector2(0.5f, 1);
             textTransform.sizeDelta = new Vector2(-40, 40);
 
@@ -167,7 +179,9 @@ namespace Shred.Lib {
 
 
             //Util.DumpGameObject(button, "   ", true);
-            Util.DumpGameObjectCloneCompare(text, modSettingsCategoryButton.transform.Find("TextMeshPro Text").gameObject, "   ");
+            Util.DumpComponentCloneCompare(button.transform as RectTransform, modSettingsCategoryButton.transform as RectTransform, "   ");
+
+            Canvas.ForceUpdateCanvases();
         }
 
         private static GameObject FindGameObjectByName(string name)
